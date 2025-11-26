@@ -1,0 +1,23 @@
+/* Adicione isso ao final do seu style.css */
+
+/* Indica que é clicável */
+.linha-clicavel {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.linha-clicavel:hover {
+    background-color: #f0f0f0;
+}
+
+/* Estilo para quando a concessionária estiver selecionada */
+.linha-clicavel.selecionada {
+    background-color: #E40000; /* Vermelho Honda */
+    color: white;
+    font-weight: bold;
+}
+
+/* Ajuste pequeno para a tabela não pular quando carregar imagens */
+#tabela-carros td {
+    vertical-align: middle;
+}

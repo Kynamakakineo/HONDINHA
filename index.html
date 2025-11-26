@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Honda | AutoManager</title>
+    <style>
+        /* --- ESTILOS (O Visual do Site) --- */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #cc0000; /* Vermelho Honda */
+            text-align: center;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        /* Imagem da Concessionária (Banner) */
+        .dealer-banner {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none; /* Começa escondida */
+            border-bottom: 4px solid #cc0000;
+        }
+
+        /* Menus de Seleção */
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #fff;
+        }
+
+        select:disabled {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+
+        /* Cartão do Carro */
+        #car-display {
+            display: none; /* Começa escondido */
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            animation: fadeIn 0.5s;
+        }
+
+        .car-photo {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background: #fafafa;
+        }
+
+        .car-info {
+            text-align: center;
+        }
+
+        .car-title {
+            font-size: 1.8em;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .car-price {
+            font-size: 2em;
+            color: #cc0000;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .car-specs {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+            font-weight: 500;
+        }
+
+        .btn-reservar {
+            background-color: #cc0000;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .btn-reservar:hover {
+            background-color: #990000;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Concessionárias Honda</h1>
+
+        <img id="dealer-img" class="dealer-banner" src="" alt="Foto da Loja">
+
+        <label for="select-dealership">Escolha a Unidade:</label>
+        <select id="select-dealership">
+            <option value="">Carregando concessionárias...</option>
+        </select>
+
+        <label for="select-model">Modelos Disponíveis:</label>
+        <select id="select-model" disabled>
+            <option value="">-- Selecione uma loja primeiro --</option>
+        </select>
+
+        <div id="car-display">
+            <img id="car-img-real" class="car-photo" src="" alt="Foto do Carro">
+            
+            <div class="car-info">
+                <h2 id="car-modelo" class="car-title">Civic Touring</h2>
+                <div id="car-price" class="car-price">R$ 0,00</div>
+                
+                <div class="car-specs">
+                    <span>📅 Ano: <strong id="car-ano">2024</strong></span>
+                    <span>🎨 Cor: <strong id="car-cor">Prata</strong></span>
+                </div>
+                
+                <button class="btn-reservar" onclick="alert('Reserva solicitada!')">Tenho Interesse</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURAÇÃO ---
+        // Se ao rodar o C# abrir em outra porta (ex: 7152), troque o número abaixo.
+        const API_BASE_URL = 'http://localhost:5076'; 
+
+        // Variáveis para guardar os dados baixados
+        let todasConcessionarias = [];
+        let todosCarros = [];
+
+        // Elementos da tela
+        const selectDealer = document.getElementById('select-dealership');
+        const selectCar = document.getElementById('select-model');
+        const displayDiv = document.getElementById('car-display');
+        const dealerImg = document.getElementById('dealer-img');
+        const carImg = document.getElementById('car-img-real');
+
+        // 1. Função que roda assim que o site abre
+        async function init() {
+            try {
+                console.log("Conectando em:", API_BASE_URL);
+
+                // Busca Lojas e Carros ao mesmo tempo
+                const [resLojas, resCarros] = await Promise.all([
+                    fetch(`${API_BASE_URL}/api/Concessionarias`),
+                    fetch(`${API_BASE_URL}/api/Carros`)
+                ]);
+
+                if (!resLojas.ok || !resCarros.ok) throw new Error("Falha na resposta da API");
+
+                todasConcessionarias = await resLojas.json();
+                todosCarros = await resCarros.json();
+
+                console.log("Dados carregados com sucesso!");
+                preencherMenuLojas();
+
+            } catch (error) {
+                console.error("Erro:", error);
+                selectDealer.innerHTML = '<option>Erro ao conectar no servidor (Verifique o C#)</option>';
+                alert("Não foi possível carregar os dados. Verifique se o projeto AutoManagerApi está rodando.");
+            }
+        }
+
+        // 2. Preenche o primeiro menu
+        function preencherMenuLojas() {
+            selectDealer.innerHTML = '<option value="">-- Selecione uma unidade --</option>';
+            
+            todasConcessionarias.forEach(loja => {
+                const option = document.createElement('option');
+                option.value = loja.id; // O ID que vem do Banco de Dados
+                option.textContent = loja.nome;
+                selectDealer.appendChild(option);
+            });
+        }
+
+        // 3. Quando o usuário muda a Concessionária
+        selectDealer.addEventListener('change', (e) => {
+            const idLoja = parseInt(e.target.value);
+
+            // Reseta a tela
+            selectCar.innerHTML = '<option value="">-- Selecione o Modelo --</option>';
+            selectCar.disabled = true;
+            displayDiv.style.display = 'none';
+            dealerImg.style.display = 'none';
+
+            if (!idLoja) return;
+
+            // Mostra a foto da Loja (Se existir ImageUrl no banco)
+            const loja = todasConcessionarias.find(l => l.id === idLoja);
+            if (loja && loja.imageUrl) {
+                dealerImg.src = loja.imageUrl;
+                dealerImg.style.display = 'block';
+            }
+
+            // Filtra os carros desta loja específica
+            // Compara o 'concessionariaId' do carro com o ID da loja selecionada
+            const carrosDaLoja = todosCarros.filter(c => c.concessionariaId === idLoja);
+
+            if (carrosDaLoja.length > 0) {
+                carrosDaLoja.forEach(carro => {
+                    const option = document.createElement('option');
+                    option.value = carro.id;
+                    option.textContent = `${carro.marca} ${carro.modelo}`;
+                    selectCar.appendChild(option);
+                });
+                selectCar.disabled = false;
+            } else {
+                selectCar.innerHTML = '<option>Sem estoque nesta unidade</option>';
+            }
+        });
+
+        // 4. Quando o usuário escolhe o Carro
+        selectCar.addEventListener('change', (e) => {
+            const idCarro = parseInt(e.target.value);
+            const carro = todosCarros.find(c => c.id === idCarro);
+
+            if (carro) {
+                // Preenche os textos com dados do Banco
+                document.getElementById('car-modelo').textContent = `${carro.marca} ${carro.modelo}`;
+                document.getElementById('car-ano').textContent = carro.ano;
+                document.getElementById('car-cor').textContent = carro.cor;
+                
+                // Formata o dinheiro (R$)
+                document.getElementById('car-price').textContent = 
+                    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(carro.preco);
+
+                // Mostra a foto do carro (ou uma genérica se não tiver no banco)
+                if (carro.imageUrl) {
+                    carImg.src = carro.imageUrl;
+                } else {
+                    carImg.src = 'https://via.placeholder.com/600x400?text=Sem+Foto+Disponivel';
+                }
+
+                displayDiv.style.display = 'block';
+            }
+        });
+
+        // Inicia tudo
+        init();
+
+    </script>
+</body>
+</html>

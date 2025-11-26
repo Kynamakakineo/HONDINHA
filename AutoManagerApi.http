@@ -1,0 +1,6 @@
+@AutoManagerApi_HostAddress = http://localhost:5076
+
+GET {{AutoManagerApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
