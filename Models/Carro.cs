@@ -23,6 +23,6 @@ namespace AutoManagerApi.Models
         public int? ConcessionariaId { get; set; } 
         
         // Propriedade de navegação (o link para o objeto "Concessionaria")
-        public Concessionaria ConcessionariaAtual { get; set; } 
+        public Concessionaria? ConcessionariaAtual { get; set; } 
     }
 }

@@ -490,3 +490,4 @@ C:\Users\cainan.rsepriano\Desktop\25-11\TESTE LOGISTICA\obj\Debug\net9.0\refint\
 C:\Users\cainan.rsepriano\Desktop\25-11\TESTE LOGISTICA\obj\Debug\net9.0\AutoManagerApi.pdb
 C:\Users\cainan.rsepriano\Desktop\25-11\TESTE LOGISTICA\obj\Debug\net9.0\AutoManagerApi.genruntimeconfig.cache
 C:\Users\cainan.rsepriano\Desktop\25-11\TESTE LOGISTICA\obj\Debug\net9.0\ref\AutoManagerApi.dll
+C:\Users\cainan.rsepriano\Desktop\25-11\TESTE LOGISTICA\obj\Debug\net9.0\AutoManagerApi.sourcelink.json

@@ -10,6 +10,8 @@ namespace AutoManagerApi.Models
         public string Telefone { get; set; } = null!;
         public string Cnpj { get; set; } = null!;
 
+        // chave gringa
+        
         public List<Carro> Carros { get; set; } = new();
     }
 }
