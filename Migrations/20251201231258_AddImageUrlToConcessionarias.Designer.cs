@@ -3,6 +3,7 @@ using AutoManagerApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutoManagerApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251201231258_AddImageUrlToConcessionarias")]
+    partial class AddImageUrlToConcessionarias
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,9 +40,6 @@ namespace AutoManagerApi.Migrations
 
                     b.Property<string>("Cor")
                         .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ImagemUrl")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Marca")
@@ -74,9 +74,6 @@ namespace AutoManagerApi.Migrations
 
                     b.Property<string>("Endereco")
                         .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ImageUrl")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Nome")

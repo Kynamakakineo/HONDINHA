@@ -43,7 +43,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(); // Gera a TELA bonita do Swagger
 }
 // -----------------------------------------------------------
- 
+
+app.UseStaticFiles();
+
 app.UseHttpsRedirection();
  
 // Aplica o CORS antes de tudo
@@ -54,4 +56,5 @@ app.UseAuthorization();
 app.MapControllers();
  
 app.Run();
+
  

@@ -16,6 +16,7 @@ namespace AutoManagerApi.Models
 
         [Column(TypeName = "decimal(10, 2)")] // Boa prática para dinheiro
         public decimal Preco { get; set; }
+         public string? ImagemUrl { get; set; }  // <-- AQUI
 
         // --- ADIÇÕES PARA LOGÍSTICA ---
         
