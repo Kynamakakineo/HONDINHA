@@ -35,7 +35,6 @@ builder.Services.AddAuthorization();
  
 var app = builder.Build();
  
-// --- AQUI ESTAVA O PROBLEMA: O SWAGGER PRECISA ESTAR AQUI ---
 // Configura o HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
